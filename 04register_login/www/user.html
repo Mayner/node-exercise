@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>注册登录</title>
+</head>
+
+<body>
+    <form>
+        姓名: <input type="text" id="username"><br> 密码: <input type="password" id="pwd"><br>
+        <input type="button" id="register" value="注册">
+        <input type="button" id="login" value="登录">
+    </form>
+    <script src="./ajax.js"></script>
+    <script>
+        window.onload = function () {
+            var oUsername = document.getElementById('username');
+            var oPwd = document.getElementById('pwd');
+            var oRegister = document.getElementById('register');
+            var oLogin = document.getElementById('login');
+
+            oRegister.onclick = function () {
+                ajax({
+                    url: '/user',
+                    type: 'post',
+                    data: {act: 'reg', user: oUsername.value, password: oPwd.value},
+                    success: function (data) {
+                        var json = JSON.parse(data);
+                        console.log(json);
+                        if (json.ok) {
+                            alert('注册成功');
+                        } else {
+                            alert('注册失败: ' + json.msg);
+                        }
+                    },
+                    error: function () {
+                        alert('通信错误');
+                    }
+                });
+            }
+
+            oLogin.onclick = function () {
+                ajax({
+                    url: '/user',
+                    type: 'post',
+                    data: {act: 'login', user: oUsername.value, password: oPwd.value},
+                    success: function (data) {
+                        var json = JSON.parse(data);
+                        console.log(json);
+                        if (json.ok) {
+                            alert('登录成功');
+                        } else {
+                            alert('登录失败: ' + json.msg);
+                        }
+                    },
+                    error: function () {
+                        alert('通信错误');
+                    }
+                });
+            }
+        }
+
+    </script>
+</body>
+
+</html>
