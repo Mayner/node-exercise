@@ -8,7 +8,7 @@ var dbUser = {
     'zhangsan': '456',
     'lisi': '666'
 };
-server.use('/login', function (req, res) {
+server.get('/login', function (req, res) {
     const user = req.query['user'];
     const password = req.query['password'];
     if (dbUser[user] == null) {
