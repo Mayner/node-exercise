@@ -4,4 +4,4 @@ exports.sum = function () {
         res += arguments[i];
     }
     return res;
-}
+};
