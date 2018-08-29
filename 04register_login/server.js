@@ -34,7 +34,7 @@ var server = http.createServer(function (req, res) {
                     break;
                 case 'login':
                     // 检查用户名是否存在
-                    if (dbUser[POST.user] == undefined) {
+                    if (dbUser[POST.user] == null) {
                         res.write('{"ok": false, "msg": "此用户不存在"}');
                     // 检查用户名密码
                     } else if (dbUser[POST.user] !== POST.password) {
