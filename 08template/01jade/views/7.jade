@@ -1,0 +1,24 @@
+html
+    head
+        style
+    body
+        -for(i=0; i<arr.length; i++)
+            div=arr[i]
+        div!=content
+
+        -var n = 13;
+        if (n%2 == 0)
+            div 我是偶数
+        else
+            div 我是奇数
+
+        -var a = 5;
+        case a
+            when 0
+                div 000
+            when 1
+                div 111
+            when 2
+                div 222
+            default
+                div 都不是
