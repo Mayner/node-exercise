@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>POST登录</title>
+</head>
+<body>
+    姓名: <input type="text" id="user"><br>
+    密码: <input type="password" id="pwd"><br>
+    <input type="button" value="登录" id="login_btn">
+    <script src="./ajax.js"></script>
+    <script>
+        window.onload = function () {
+            var oUser = document.getElementById('user');
+            var oPwd = document.getElementById('pwd');
+            var oLoginBtn = document.getElementById('login_btn');
+
+            oLoginBtn.onclick = function () {
+                ajax({
+                    url: '/login',
+                    type: 'post',
+                    data: {user: oUser.value, password: oPwd.value},
+                    success: function (data) {
+                        var json = JSON.parse(data);
+                        if (json.ok) {
+                            alert('登录成功');
+                        } else {
+                            alert('登录失败: ' + json.msg);
+                        }
+                    },
+                    error: function () {
+                        alert('通信失败');
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
