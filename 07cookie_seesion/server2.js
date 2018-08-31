@@ -4,9 +4,10 @@ const cookieParser =require('cookie-parser');
 var server = express();
 server.listen(8080);
 
-server.use(cookieParser('asddwsx09321e2dsae12d'));
+server.use(cookieParser('asddwsx09321e2dsae12d'));  // 加签名秘钥
 
 server.use('/', function (req, res) {
+    // 设置cookie
     res.cookie('user', 'sky', {signed: true});
     
     req.secret = 'asddwsx09321e2dsae12d'    // 此句可不写

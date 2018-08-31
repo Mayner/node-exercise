@@ -1,15 +1,17 @@
 const express =require('express');
 const cookieParser =require('cookie-parser');
+const cookieSession =require('cookie-session');
 
 var server = express();
 server.listen(8080);
 
 server.use(cookieParser());
+server.use(cookieSession({
+    keys: ['aa', 'bb', 'cc']
+}));
 
-server.use('/a', function (req, res) {
-    // 设置cookie
-    res.cookie('user', 'sky', {path: '/a', maxAge: 30*24*3600*1000});
-    // 读取cookie
-    console.log(req.cookies);
+server.use('/', function (req, res) {
+    console.log(req.session);
+
     res.send('ok');
 });
