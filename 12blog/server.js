@@ -6,9 +6,13 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const consolidate = require('consolidate');
 const mysql = require('mysql');
+const common = require('./libs/common');
 
 var server = express();
 server.listen(8080);
+
+// 连接数据库
+const db = mysql.createPool({host: 'localhost', user: 'root', password: 'root', database: 'blog'});
 
 // 解析cookie
 server.use(cookieParser('sdcoefoh23j230djw9823d223edwd23rdj'));
@@ -38,14 +42,52 @@ server.set('views', './template');
 // 使用哪种模板引擎
 server.engine('html', consolidate.ejs);
 
-server.get('/', function (req, res) {
-    res.render('index.ejs', {}, function (err, data) {
+server.get('/', function (req, res, next) {
+    db.query('SELECT * FROM banner_table;', function (err, data) {
         if (err) {
-            console.log(err);
+            res.status(500).send('database error').end();
         } else {
-            res.send(data);
+            res.banners = data;
+            next();
         }
     });
+});
+
+server.get('/', function (req, res, next) {
+    db.query('SELECT ID,title,summary FROM article_table', function (err, data) {
+        if (err) {
+            res.status(500).send('database error').end();
+        } else {
+            res.articles = data;
+            next();
+        }
+    });
+});
+
+server.get('/', function (req, res) {
+    res.render('index.ejs', {banners: res.banners, articles: res.articles});
+});
+
+server.get('/article', function (req, res) {
+    var id = req.query.id;
+    if (id) {
+        db.query(`SELECT * FROM article_table WHERE ID=${id}`, function (err, data) {
+            if (err) {
+                res.status(500).send('database error').end();
+            } else {
+                if (data.length == 0) {
+                    res.status(404).send('您请求的文章找不到').end();
+                } else {
+                    var article_data = data[0];
+                    article_data.sDate = common.time2date(article_data.post_time);
+                    article_data.content = article_data.content.replace(/^/gm, '<p>').replace(/$/gm, '</p>');
+                    res.render('conText.ejs', {article_data: article_data});
+                }
+            }
+        });
+    } else {
+        res.status(404).send('您请求的文章找不到').end();
+    }
 });
 
 // 读取静态文件数据
