@@ -71,20 +71,44 @@ server.get('/', function (req, res) {
 server.get('/article', function (req, res) {
     var id = req.query.id;
     if (id) {
-        db.query(`SELECT * FROM article_table WHERE ID=${id}`, function (err, data) {
-            if (err) {
-                res.status(500).send('database error').end();
-            } else {
-                if (data.length == 0) {
-                    res.status(404).send('您请求的文章找不到').end();
+        if (req.query.act == 'like') {
+            db.query(`UPDATE article_table SET n_like=n_like+1 WHERE ID=${id}`, function (err, data) {
+                if (err) {
+                    console.log(err);
+                    res.status(500).send('database error').end();
                 } else {
-                    var article_data = data[0];
-                    article_data.sDate = common.time2date(article_data.post_time);
-                    article_data.content = article_data.content.replace(/^/gm, '<p>').replace(/$/gm, '</p>');
-                    res.render('conText.ejs', {article_data: article_data});
+                    db.query(`SELECT * FROM article_table WHERE ID=${id}`, function (err, data) {
+                        if (err) {
+                            res.status(500).send('database error').end();
+                        } else {
+                            if (data.length == 0) {
+                                res.status(404).send('您请求的文章找不到').end();
+                            } else {
+                                var article_data = data[0];
+                                article_data.sDate = common.time2date(article_data.post_time);
+                                article_data.content = article_data.content.replace(/^/gm, '<p>').replace(/$/gm, '</p>');
+                                res.render('conText.ejs', {article_data: article_data});
+                            }
+                        }
+                    });
                 }
-            }
-        });
+            });
+        } else {
+            db.query(`SELECT * FROM article_table WHERE ID=${id}`, function (err, data) {
+                if (err) {
+                    res.status(500).send('database error').end();
+                } else {
+                    if (data.length == 0) {
+                        res.status(404).send('您请求的文章找不到').end();
+                    } else {
+                        var article_data = data[0];
+                        article_data.sDate = common.time2date(article_data.post_time);
+                        article_data.content = article_data.content.replace(/^/gm, '<p>').replace(/$/gm, '</p>');
+                        res.render('conText.ejs', {article_data: article_data});
+                    }
+                }
+            });
+        }
     } else {
         res.status(404).send('您请求的文章找不到').end();
     }
